@@ -256,7 +256,7 @@ def render_practice_heatmap(lessons):
     return fig
 
 def render_trend_chart(lessons):
-    """Smooth practice trend with gradient fill"""
+    """Smooth practice trend with gradient fill and teacher annotations"""
     if not lessons:
         return None
     
@@ -271,6 +271,7 @@ def render_trend_chart(lessons):
     
     x = df["lesson"].values
     y = df["practice_count"].values
+    teachers = df["teacher"].values
     
     # Plot line with markers
     ax.plot(x, y, marker='o', linewidth=3, markersize=8, 
@@ -280,8 +281,32 @@ def render_trend_chart(lessons):
     # Fill under curve
     ax.fill_between(x, y, alpha=0.3, color='#00d2ff')
     
+    # Add teacher annotations at y=0 on the X-axis
+    for i, (lesson_num, practice_cnt, teacher) in enumerate(zip(x, y, teachers)):
+        # Shorten teacher name if too long (take first name only)
+        teacher_short = teacher.split()[0] if teacher else ""
+        
+        # Reverse the string to fix Hebrew display (matplotlib reads left-to-right)
+        teacher_display = teacher_short[::-1]
+        
+        # Position at y=0
+        ax.text(lesson_num, 0, teacher_display,
+               ha='center',
+               va='center',
+               fontsize=8,
+               color='#f093fb',
+               weight='bold',
+               bbox=dict(boxstyle='round,pad=0.3', 
+                        facecolor=(0, 0, 0, 0.6), 
+                        edgecolor='none'),
+               rotation=0)
+    
     # Force integer Y-axis
     ax.yaxis.set_major_locator(plt.MaxNLocator(integer=True))
+    
+    # Set X-axis to show only lesson numbers (integers)
+    ax.set_xticks(x)
+    ax.set_xticklabels([int(lesson) for lesson in x])
     
     ax.set_xlabel('Lesson Number', color='white', fontsize=12, weight='bold')
     ax.set_ylabel('Practice Count', color='white', fontsize=12, weight='bold')
@@ -379,10 +404,37 @@ st.markdown("### 👤 Student Profile")
 col_left, col_right = st.columns([2, 1])
 
 with col_left:
+    # Calculate course duration
+    lessons = student.get("lessons", [])
+    if lessons and lessons[0].get('first_practice'):
+        try:
+            first_practice_str = lessons[0]['first_practice']
+            # Parse format "18:27, 6.2.2025"
+            if ',' in first_practice_str:
+                date_part = first_practice_str.split(',')[1].strip()
+                first_date = datetime.strptime(date_part, '%d.%m.%Y')
+                days_in_course = (datetime.now() - first_date).days
+                
+                # Convert to months and days for better readability
+                months = days_in_course // 30
+                remaining_days = days_in_course % 30
+                
+                if months > 0:
+                    duration_text = f"{months} month{'s' if months > 1 else ''}, {remaining_days} day{'s' if remaining_days != 1 else ''}"
+                else:
+                    duration_text = f"{days_in_course} day{'s' if days_in_course != 1 else ''}"
+            else:
+                duration_text = "Unknown"
+        except:
+            duration_text = "Unknown"
+    else:
+        duration_text = "No data"
+    
     st.markdown(f"""
     <div class="student-card">
         <h2 style='margin-top: 0;'>{student['name']}</h2>
         <p><strong>📱 Phone:</strong> {student['phone_number']}</p>
+        <p><strong>⏱️ Time in Course:</strong> {duration_text}</p>
         <p><strong>📅 Last Message:</strong> {student['last_message_timedate']}</p>
         <p><strong>✏️ Last Practice:</strong> {student['last_practice_timedate']}</p>
         <p><strong>💬 Total Messages:</strong> {student['total_messages']}</p>
