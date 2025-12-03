@@ -97,9 +97,7 @@ def render_practice_analysis(student, metrics):
             _info_box(
                 "🎯 Consistency Score",
                 f"{metrics['consistency_score']}% - "
-                f"{'Excellent!' if metrics['consistency_score'] > 70 else 'Good progress' if metrics['consistency_score'] > 50 else 'Room for improvement'}",
-                "Measures how evenly distributed practice sessions are across lessons."
-            )
+                f"{'Excellent!' if metrics['consistency_score'] > 70 else 'Good progress' if metrics['consistency_score'] > 50 else 'Room for improvement'}")
 
         with col2:
             recent = lessons[-3:] if len(lessons) >= 3 else lessons
