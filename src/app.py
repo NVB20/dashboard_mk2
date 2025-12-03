@@ -1,35 +1,38 @@
 import streamlit as st
 from data.mongo import load_students
-from logic.metrics import calculate_student_metrics
-from config.settings import TOTAL_LESSONS
-from ui.css import inject_css
-from ui.layout import render_student_top_metrics, render_student_profile, render_practice_analysis, render_all_students_overview
+from teachers_page import render_teachers_page
+from students_page import render_students_dashboard
 
+# Your existing constants
+TOTAL_LESSONS = 12  # Adjust based on your curriculum
 
-# Streamlit setup
-st.set_page_config(page_title="Student Dashboard", layout="wide")
-inject_css()
-
-# Load DB
+# Load data
 df = load_students()
 
-if df.empty:
-    st.warning("No students found.")
-    st.stop()
-
-# Sidebar
+# Sidebar with navigation
 with st.sidebar:
-    st.markdown("### 🎯 Student Selection")
-    student_list = df["name"].tolist()
-    selected_name = st.selectbox("Choose a student:", student_list, label_visibility="collapsed")
+    st.markdown("### 🎯 Navigation")
+    page = st.radio("Select Page:", ["Student Dashboard", "Teachers Overview"])
+    
+    st.markdown("---")
+    
+    # Initialize selected_name variable
+    selected_name = None
+    
+    if page == "Student Dashboard":
+        st.markdown("### 🎯 Student Selection")
+        if not df.empty:
+            student_list = df["name"].tolist()
+            selected_name = st.selectbox("Choose a student:", student_list, label_visibility="collapsed")
     
     st.markdown("---")
     st.markdown("### 📊 Dashboard Stats")
     st.markdown(f"**Total Students:** {len(df)}")
     st.markdown(f"**Total Lessons:** {TOTAL_LESSONS}")
     
-    avg_completion = df["current_lesson"].astype(int).mean()
-    st.markdown(f"**Avg Completion:** {avg_completion:.1f}/{TOTAL_LESSONS}")
+    if not df.empty and "current_lesson" in df.columns:
+        avg_completion = df["current_lesson"].astype(int).mean()
+        st.markdown(f"**Avg Completion:** {avg_completion:.1f}/{TOTAL_LESSONS}")
     
     st.markdown("---")
     st.markdown("### 🔄 Refresh Data")
@@ -37,27 +40,8 @@ with st.sidebar:
         st.cache_data.clear()
         st.rerun()
 
-# Get selected student
-student = df[df["name"] == selected_name].iloc[0]
-metrics = calculate_student_metrics(student)
-
-
-# Metrics
-metrics = calculate_student_metrics(student)
-
-# Title
-st.title("📚 Student Dashboard")
-
-# --- TOP METRICS ---
-render_student_top_metrics(student, metrics)
-
-# --- PROFILE SECTION ---
-render_student_profile(student)
-
-# --- ANALYSIS SECTION ---
-render_practice_analysis(student, metrics)
-
-# --- CHARTS ---
-col1, col2 = st.columns(2)
-
-render_all_students_overview(df)
+# Page routing
+if page == "Teachers Overview":
+    render_teachers_page(df)
+if page == "Student Dashboard":
+    render_students_dashboard(df, selected_name, TOTAL_LESSONS)
