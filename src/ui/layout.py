@@ -145,7 +145,7 @@ def _calculate_course_duration(student):
         return "No data"
 
     first_practice = lessons[0].get("first_practice")
-    if not first_practice or "," not in first_practice:
+    if not first_practice or not isinstance(first_practice, str) or "," not in first_practice:
         return "Unknown"
 
     try:
@@ -175,7 +175,9 @@ def _render_profile_badges(student):
 
     # Days since last practice
     last_practice = student.get("last_practice_timedate", "")
-    if "," in last_practice:
+    
+    # Check if last_practice is a valid string before checking for comma
+    if isinstance(last_practice, str) and "," in last_practice:
         try:
             date_part = last_practice.split(",")[1].strip()
             last_date = datetime.strptime(date_part, "%d.%m.%Y")
