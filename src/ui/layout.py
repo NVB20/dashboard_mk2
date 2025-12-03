@@ -6,9 +6,7 @@ from config.settings import TOTAL_LESSONS
 from ui.charts import render_practice_heatmap, render_progress_ring, render_trend_chart
 
 
-# ============================
 #  TOP METRICS SECTION
-# ============================
 def render_student_top_metrics(student, metrics):
     st.markdown("### 📈 Key Metrics")
     col1, col2, col3, col4 = st.columns(4)
@@ -29,17 +27,13 @@ def render_student_top_metrics(student, metrics):
 
 
 
-# ============================
 #  STUDENT PROFILE CARD
-# ============================
 def render_student_profile(student):
     st.markdown("### 👤 Student Profile")
 
     col_left, col_right = st.columns([2, 1])
 
-    # ------------------
     # LEFT — student info
-    # ------------------
     with col_left:
         duration_text = _calculate_course_duration(student)
 
@@ -57,9 +51,7 @@ def render_student_profile(student):
         # Stats badges under card
         _render_profile_badges(student)
 
-    # ------------------
-    # RIGHT — progress ring
-    # ------------------
+    # RIGHT — progress ring-
     with col_right:
         st.markdown("<div style='padding: 20px;'>", unsafe_allow_html=True)
         fig = render_progress_ring(int(student["current_lesson"]), TOTAL_LESSONS)
@@ -68,9 +60,7 @@ def render_student_profile(student):
 
 
 
-# ============================
 #  PRACTICE ANALYSIS SECTION
-# ============================
 def render_practice_analysis(student, metrics):
     st.markdown("### 📊 Practice Analysis")
 
@@ -83,9 +73,7 @@ def render_practice_analysis(student, metrics):
     tab1, tab2, tab3 = st.tabs(["📈 Trend Analysis", "🔥 Practice Heatmap", "📋 Lesson Details"])
 
 
-    # ------------------
     # Trend chart
-    # ------------------
     with tab1:
         fig = render_trend_chart(lessons)
         if fig:
@@ -105,9 +93,7 @@ def render_practice_analysis(student, metrics):
             _info_box("📅 Recent Performance", f"{recent_avg:.1f} avg practices (last 3 lessons)")
 
 
-    # ------------------
     # Heatmap
-    # ------------------
     with tab2:
         fig = render_practice_heatmap(lessons)
         if fig:
@@ -120,9 +106,7 @@ def render_practice_analysis(student, metrics):
         )
 
 
-    # ------------------
     # Lesson Details Table
-    # ------------------
     with tab3:
         df = pd.DataFrame(lessons)
         df = df.sort_values("lesson", ascending=False)
@@ -130,9 +114,7 @@ def render_practice_analysis(student, metrics):
 
 
 
-# ============================
 #  ALL STUDENTS TABLE
-# ============================
 def render_all_students_overview(df):
     with st.expander("📋 All Students Overview", expanded=False):
         summary = df.copy()
@@ -147,9 +129,7 @@ def render_all_students_overview(df):
 
 
 
-# ============================
 #  INTERNAL HELPERS
-# ============================
 def _metric_card(label, value):
     st.markdown(f"""
     <div class="metric-card">
