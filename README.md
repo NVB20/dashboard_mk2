@@ -12,7 +12,6 @@ A beautiful, interactive dashboard for tracking student learning progress and pr
 - **Real-time Metrics**: Track lesson completion, total practices, and student performance
 - **Consistency Score**: Measure how regularly students practice across lessons
 - **Trend Analysis**: Visualize practice patterns over time with interactive charts
-- **Difficulty Heatmap**: Color-coded visualization (🟢 Easy | 🟠 Medium | 🔴 Hard)
 
 ### 👤 Student Profiles
 - Detailed student information and contact details
