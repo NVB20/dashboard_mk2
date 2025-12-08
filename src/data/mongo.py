@@ -5,10 +5,14 @@ import pandas as pd
 from config.settings import MONGO_USER
 from config.settings import MONGO_PASSWORD
 from config.settings import MONGO_PORT
+from config.settings import MONGO_HOST
 
 
 # MongoDB Connection
-MONGO_URL = f"mongodb://{MONGO_USER}:{MONGO_PASSWORD}@localhost:{MONGO_PORT}/?authSource=admin"
+MONGO_URL = (
+    f"mongodb://{MONGO_USER}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}/"
+    "?authSource=admin"
+)
 
 client = MongoClient(MONGO_URL)
 db = client["students_db"]
