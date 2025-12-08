@@ -11,12 +11,6 @@ MONGO_PORT = os.getenv("MONGO_PORT")
 MONGO_HOST = os.getenv("MONGO_HOST")
 TOTAL_LESSONS = int(os.getenv("TOTAL_LESSONS"))
 
-print("="*60)
-print(MONGO_HOST)
-print("="*60)
-
-
-
 st.set_page_config(
     page_title="Student Stats Dashboard",
     layout="wide",
