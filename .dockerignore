@@ -1,0 +1,51 @@
+# ---------------------------
+# Python / Streamlit Project
+# ---------------------------
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.pkl.gz
+
+# Virtual environment
+venv/
+.venv/
+
+# Environment variables (DO NOT COMMIT SECRETS)
+.env
+*.env
+
+# Streamlit cache & logs
+.streamlit/
+.streamlit/secrets.toml
+**/.streamlit/
+
+# Jupyter notebooks (optional)
+.ipynb_checkpoints/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE / editor configs
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build / distribution folders
+build/
+dist/
+*.egg-info/
+
+# Docker (optional)
+*.pid
